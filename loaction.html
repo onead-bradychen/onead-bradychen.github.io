@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="getLocation()">Your coordinates are:</button>
+    <div id="Test"></div>
+    <script>
+        var x = document.getElementById("Test");
+        
+        function getLocation() {
+            //Check if Geolocation is supported 
+            if (navigator.geolocation) {
+              //If supported, run the getCurrentPosition() method
+              //If the getCurrentPosition() method is successful, it returns a coordinates object to the function specified in the parameter (showPosition)
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else { 
+              //If not, display a message to the user
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+        
+        //The showPosition() function outputs the Latitude and Longitude
+        function showPosition(position) {
+            x.innerHTML = "Latitude: " + position.coords.latitude + 
+            "<br>Longitude: " + position.coords.longitude;
+        }
+        </script>
+</body>
+</html>
