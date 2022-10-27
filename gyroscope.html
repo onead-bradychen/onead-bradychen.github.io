@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     <button onclick="getGyroscope()">取得陀螺儀</button>
 
@@ -13,18 +15,27 @@
     <script>
         var x = document.getElementById("Test");
         function getGyroscope() {
-            console.log('getGyroscope')
-            window.addEventListener("deviceorientation", handleOrientation, true);
-            function handleOrientation(event) {
-                console.log(event)
-                x.innerHTML= event;
-                // Do stuff with the new orientation data
+            if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
+                // (optional) Do something before API request prompt.
+                DeviceMotionEvent.requestPermission()
+                    .then(response => {
+                        // (optional) Do something after API prompt dismissed.
+                        if (response == "granted") {
+                            window.addEventListener("devicemotion", (e) => {
+                                console.log(event)
+                                x.innerHTML = event;
+                            })
+                        }
+                    })
+                    .catch(console.error)
+            } else {
+                alert("DeviceMotionEvent is not defined");
             }
-           
         }
 
 
 
     </script>
 </body>
+
 </html>
