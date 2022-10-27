@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button onclick="getCamera()">相機</button>
+    <video></video>
+    <script>
+        function getCamera() {
+            const constraints = {
+                audio: false,
+                video: { width: 1280, height: 720 }
+            };
+
+            navigator.mediaDevices
+                .getUserMedia(constraints)
+                .then((mediaStream) => {
+                    const video = document.querySelector("video");
+                    video.srcObject = mediaStream;
+                    video.onloadedmetadata = () => {
+                        video.play();
+                    };
+                })
+                .catch((err) => {
+                    // always check for errors at the end.
+                    console.error(`${err.name}: ${err.message}`);
+                });
+        }
+    </script>
+</body>
+
+</html>

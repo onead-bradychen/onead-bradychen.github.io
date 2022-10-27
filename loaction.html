@@ -11,12 +11,10 @@
 
 <body>
     <button onclick="getLocation()">取得地理定位</button>
-    <button onclick="getCamera()">相機</button>
-    <video></video>
+
     <div id="Test"></div>
     <script>
         var x = document.getElementById("Test");
-
         function getLocation() {
             //Check if Geolocation is supported 
             if (navigator.geolocation) {
@@ -35,26 +33,6 @@
                 "<br>Longitude: " + position.coords.longitude;
         }
 
-        function getCamera() {
-            const constraints = {
-                audio: false,
-                video: { width: 1280, height: 720 }
-            };
-
-            navigator.mediaDevices
-                .getUserMedia(constraints)
-                .then((mediaStream) => {
-                    const video = document.querySelector("video");
-                    video.srcObject = mediaStream;
-                    video.onloadedmetadata = () => {
-                        video.play();
-                    };
-                })
-                .catch((err) => {
-                    // always check for errors at the end.
-                    console.error(`${err.name}: ${err.message}`);
-                });
-        }
     </script>
 </body>
 
