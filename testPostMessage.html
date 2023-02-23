@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <iframe id="iframe2" src="https://d21d-2001-b400-e288-27a3-d5d2-40af-3557-90af.jp.ngrok.io/testPostmessage_2.html" width="600px" height="600px"></iframe>
+    <iframe id="iframe3" src="https://d21d-2001-b400-e288-27a3-d5d2-40af-3557-90af.jp.ngrok.io/testPostmessage_3.html" width="600px" height="600px"></iframe>
+    <div id="app" style="opacity: 0;position: absolute; top:0;left:0;">
+    </div>
+</body>
+</html>
+<script>
+    const getCameraStream = () => { //要 camera 的權限
+        navigator.mediaDevices
+        .getUserMedia({ //相機限制
+            audio: false,
+            video: {
+                facingMode: "user"  //開前鏡頭
+            }
+        })
+        .then(function success(stream) {
+            video.srcObject =stream;
+        });
+    };
+    const getFrameFromVideo = (video, canvas) => {
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();   //儲存狀態
+        ctx.translate(600, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0, 600, 600);
+        ctx.restore(); //到此才輸出，才不會還沒整體操作完就放出，會造成畫面快速抖動
+
+        const {data: rgba}  = ctx.getImageData(0,0,600,600)
+        iframe2.contentWindow.postMessage(rgba,'*',[rgba.buffer])
+
+        const dataURL = canvas.toDataURL("image/jpeg",1);
+        iframe3.contentWindow.postMessage(dataURL,'*')
+        //requestAnimationFrame(() => getFrameFromVideo(video, canvas));
+    };
+
+    const createVideo = (id, width, height) => {
+        const v = document.createElement("video");
+        v.id = id;
+        v.playsInline = true;
+        v.width = width;
+        v.height = height;
+        v.autoplay = true;
+        v.controls = true;
+        return v;
+    };
+    
+    const createCanvas = (id, width, height) => {
+        const canvas = document.createElement("canvas");
+        canvas.id = id;
+        canvas.width = width;
+        canvas.height = height;
+        return canvas;
+    };
+    const video=createVideo("vid", 480, 360);
+    const canvas = createCanvas("canvas", 480, 360);
+    const app = document.getElementById("app");
+    app.appendChild(video);
+    app.appendChild(canvas);
+    const iframe2 = document.getElementById('iframe2')
+    const iframe3 = document.getElementById('iframe3')
+    getCameraStream()
+    setInterval(()=>getFrameFromVideo(video,canvas),1000/30)
+   
+</script>
